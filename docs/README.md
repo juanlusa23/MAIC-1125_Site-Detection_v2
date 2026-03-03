@@ -1,3 +1,7 @@
+# ADVERTENCIA IMPORTANTE
+
+Este modelo es una herramienta asistiva solo para screening preliminar. Produce falsos negativos. NO debe usarse como único verificador en decisiones de seguridad vital. Su uso debe complementarse siempre con la supervisión humana y protocolos de seguridad establecidos.
+
 # YOLO26 para Detección de Seguridad Industrial (MAIC-1125)
 
 Este proyecto implementa un modelo YOLO26 (YOLOv8) ajustado para la detección de objetos relacionados con la seguridad en entornos industriales, centrándose en cascos, chalecos, personas y la ausencia de estos elementos.
@@ -60,6 +64,16 @@ También puede ejecutar la inferencia directamente desde la línea de comandos (
 # Asegúrate de que `HOME` esté correctamente configurado en tu entorno de CLI
 !yolo task=detect mode=predict model=/content/model_weights/best.pt source="/path/to/your/image.jpg" save=True
 ```
+
+## Visualización de Ejemplos
+Aquí puedes añadir imágenes para mostrar ejemplos de detección del modelo. Es altamente recomendable incluir:
+*   **`confusion_matrix.png`**: Para visualizar el rendimiento del modelo por clase.
+*   **Imágenes con detecciones anotadas**: Para mostrar cómo el modelo detecta los objetos en la práctica. Puedes incluir ejemplos exitosos y algunos que ilustren las limitaciones mencionadas.
+
+Asegúrate de que las rutas de las imágenes sean correctas una vez que las subas a tu repositorio de GitHub.
+
+<!-- Ejemplo de cómo añadir una imagen -->
+<!-- ![Descripción de la Imagen](ruta/a/tu/imagen.png) -->
 
 ## Limitaciones del Modelo
 
