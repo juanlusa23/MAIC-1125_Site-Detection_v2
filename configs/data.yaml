@@ -1,0 +1,16 @@
+names:
+- helmet
+- no helmet
+- no vest
+- person
+- vest
+nc: 5
+roboflow:
+  license: CC BY 4.0
+  project: maic-1125_m4t3
+  url: https://universe.roboflow.com/juans-workspace-wp60g/maic-1125_m4t3/dataset/2
+  version: 2
+  workspace: juans-workspace-wp60g
+test: ../test/images
+train: ../train/images
+val: ../valid/images
