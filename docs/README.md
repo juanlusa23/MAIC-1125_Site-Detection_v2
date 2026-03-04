@@ -225,6 +225,7 @@ MAIC-1125_Site-Detection_v2/
 ├── docs/
 │   ├── README.md           # Este archivo
 │   ├── Reproducibility_test.ipynb         # Notebook de verificación del pipeline (Colab)
+│   ├── Training_pipeline_roboflow.ipynb   # Notebook original exportado de Roboflow (referencia)
 │   └── governance_checklist.md            # Checklist de ética y gobernanza
 ├── model_weights/
 │   ├── best.pt             # Pesos del mejor modelo entrenado
