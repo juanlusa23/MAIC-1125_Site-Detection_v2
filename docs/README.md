@@ -1,93 +1,229 @@
-# ADVERTENCIA IMPORTANTE
+> ⚠️ **ADVERTENCIA IMPORTANTE:** Este modelo es una herramienta asistiva solo para screening preliminar.
+> Produce falsos negativos. **NO debe usarse como único verificador en decisiones de seguridad vital.**
+> Su uso debe complementarse siempre con supervisión humana y protocolos de seguridad establecidos.
 
-Este modelo es una herramienta asistiva solo para screening preliminar. Produce falsos negativos. NO debe usarse como único verificador en decisiones de seguridad vital. Su uso debe complementarse siempre con la supervisión humana y protocolos de seguridad establecidos.
+---
 
-# YOLO26 para Detección de Seguridad Industrial (MAIC-1125)
+# MAIC-1125 — Detección de EPP en Sitios Industriales
 
-Este proyecto implementa un modelo YOLO26 (YOLOv8) ajustado para la detección de objetos relacionados con la seguridad en entornos industriales, centrándose en cascos, chalecos, personas y la ausencia de estos elementos.
+Modelo YOLOv8 ajustado para detectar el uso (y ausencia) de Equipos de Protección Personal (EPP)
+en entornos de construcción e industria — cascos, chalecos y personas.
 
-## Estructura del Proyecto
-- `model_weights/`: Contiene los pesos del modelo entrenado (`best.pt`, `last.pt`).
-- `configs/`: Contiene el archivo de configuración del dataset (`data.yaml`).
-- `docs/`: Almacena la documentación del proyecto, incluyendo este `README.md`.
+---
 
-## Cómo Usar el Modelo
+## 🏗️ Problema AECO y Criterios de Éxito
 
-Para utilizar el modelo entrenado para inferencia, siga los siguientes pasos:
+**Problema:** En sitios de construcción, la ausencia de EPP (casco, chaleco) es una de las
+principales causas de accidentes graves. La verificación manual es costosa, inconsistente y
+no escala. Se necesita una herramienta de screening automático para apoyar la supervisión.
 
-1.  **Cargar el modelo:**
-    ```python
-    from ultralytics import YOLO
-    import os
+**Criterios de éxito (PoC universitario):**
+- Detectar correctamente cascos y chalecos con mAP50 > 0.60 en validación
+- Identificar ausencia de EPP como señal de alerta (aunque con menor precisión en esta versión)
+- Servir como base reproducible para iteraciones futuras con más datos
 
-    HOME = '/content' # Asegúrate de que HOME apunte al directorio base
-    model_path = os.path.join(HOME, 'model_weights', 'best.pt')
-    model = YOLO(model_path)
-    ```
+---
 
-2.  **Preparar la imagen para inferencia:**
-    Asegúrese de tener una imagen en la que desee realizar la detección. Puede usar `PIL` para cargarla.
-    ```python
-    from PIL import Image
-    # Reemplace con la ruta de su imagen
-    image_path = '/content/dog-2.jpeg' # Ejemplo de imagen
-    image = Image.open(image_path)
-    ```
+## 🏷️ Clases Detectadas y Reglas de Etiquetado
 
-3.  **Realizar la inferencia:**
-    ```python
-    results = model.predict(image, verbose=False)[0]
-    # Los resultados contienen los cuadros delimitadores, clases y confianzas
-    print(results.boxes.xyxy) # Coordenadas de los cuadros
-    print(results.boxes.conf) # Confianza de la detección
-    print(results.boxes.cls)  # Clases detectadas
-    ```
+| ID | Clase | Descripción | Regla de etiquetado |
+|----|-------|-------------|---------------------|
+| 0 | `helmet` | Casco de seguridad puesto | Casco visible y en posición correcta sobre la cabeza |
+| 1 | `no helmet` | Sin casco | Persona visible sin casco; cabeza claramente expuesta |
+| 2 | `no vest` | Sin chaleco | Persona sin chaleco de alta visibilidad |
+| 3 | `person` | Persona (genérica) | Cuerpo humano detectado, sin evaluar EPP |
+| 4 | `vest` | Chaleco puesto | Chaleco reflectante visible sobre el torso |
 
-4.  **Visualizar los resultados (opcional, requiere `supervision`):**
-    ```python
-    import supervision as sv
+**Notas de etiquetado:**
+- Se etiquetan solo objetos con visibilidad ≥ 50% (sin oclusión severa)
+- No se aplica blur de rostros (contexto académico; distancias de captura minimizan PII identificable)
+- Fuentes: imágenes de Unsplash + imágenes generadas con IA — licencia CC BY 4.0
 
-    detections = sv.Detections.from_ultralytics(results)
+---
 
-    # Función de anotación (puede adaptar la función `annotate` de este notebook)
-    # def annotate(image: Image.Image, detections: sv.Detections) -> Image.Image:
-    #    ...
+## 📦 Dataset
 
-    # annotated_image = annotate(image, detections)
-    # annotated_image.show()
-    ```
+| Campo | Valor |
+|-------|-------|
+| Fuente | Roboflow Universe |
+| URL | https://universe.roboflow.com/juans-workspace-wp60g/maic-1125_m4t3/dataset/2 |
+| Versión | 2 |
+| Licencia | CC BY 4.0 |
+| Train | 76 imágenes |
+| Validación | 15 imágenes |
+| Split | ~80 / 20 (sin set de test separado en esta versión) |
+| Clases | 5 |
 
-## Ejemplo de Inferencia con CLI
-También puede ejecutar la inferencia directamente desde la línea de comandos (CLI) si tiene `ultralytics` instalado.
+---
+
+## 🚀 Cómo Usar el Detector
+
+Hay dos formas de usar el modelo: **localmente** (recomendado para pruebas rápidas)
+o en **Google Colab** (para re-entrenamiento o sin Python instalado).
+
+---
+
+### Opción 1 — App Local (Gradio) ⭐ Recomendado
+
+Interfaz web que corre en tu máquina. No necesitas Colab ni cuenta de Google.
+
+**Requisitos:** Python 3.9+ y `pip`
 
 ```bash
-# Asegúrate de que `HOME` esté correctamente configurado en tu entorno de CLI
-!yolo task=detect mode=predict model=/content/model_weights/best.pt source="/path/to/your/image.jpg" save=True
+# 1. Clonar el repositorio
+git clone https://github.com/<tu-usuario>/MAIC-1125_Site-Detection_v2.git
+cd MAIC-1125_Site-Detection_v2
+
+# 2. Arrancar la app (instala dependencias automáticamente)
+# Windows:
+run.bat
+
+# Mac / Linux:
+bash run.sh
+
+# 3. Abrir en el navegador
+# http://localhost:7860
 ```
 
-## Visualización de Ejemplos
-Aquí puedes añadir imágenes para mostrar ejemplos de detección del modelo. Es altamente recomendable incluir:
-*   **`confusion_matrix.png`**: Para visualizar el rendimiento del modelo por clase.
-*   **Imágenes con detecciones anotadas**: Para mostrar cómo el modelo detecta los objetos en la práctica. Puedes incluir ejemplos exitosos y algunos que ilustren las limitaciones mencionadas.
+La app permite subir una imagen (o usar la webcam) y devuelve:
+- Imagen anotada con bounding boxes coloreados
+- Resumen con clase y % de confianza por detección
 
-Asegúrate de que las rutas de las imágenes sean correctas una vez que las subas a tu repositorio de GitHub.
+🟢 Verde = EPP presente · 🔴 Rojo = EPP ausente · 🔵 Azul = persona
 
-<!-- Ejemplo de cómo añadir una imagen -->
-<!-- ![Descripción de la Imagen](ruta/a/tu/imagen.png) -->
+---
 
-## Limitaciones del Modelo
+### Opción 2 — Google Colab
 
-Es importante destacar que, durante la fase de validación, el modelo mostró un rendimiento particularmente bajo para la detección de la clase **'no helmet' (sin casco)**. Los resultados de validación indicaron un **mAP50 de 0.0457** para esta clase, lo que sugiere que el modelo tiene dificultades significativas para identificar correctamente a las personas que no llevan casco.
+Para re-entrenar el modelo o probarlo sin instalar nada localmente.
 
-Esto puede deberse a la escasez de ejemplos de entrenamiento para esta clase, la variabilidad en las condiciones de iluminación, o la similitud visual con otras clases o fondos.
+#### Pasos de reproducción
 
-## Posibles Mejoras Futuras
+```python
+# Paso 1 — Instalar dependencias
+%pip install -q "ultralytics>=8.4.0" supervision roboflow
 
-Para mejorar el rendimiento del modelo, especialmente en la detección de 'no helmet', se sugieren las siguientes acciones:
+# Paso 2 — Descargar dataset desde Roboflow
+from roboflow import Roboflow
+rf = Roboflow(api_key="TU_API_KEY")
+project = rf.workspace("juans-workspace-wp60g").project("maic-1125_m4t3")
+dataset = project.version(2).download("yolov8")
 
-*   **Recopilación de más datos:** Aumentar significativamente el número de imágenes de entrenamiento que contengan personas sin casco, abarcando diversas condiciones y poses.
-*   **Aumento de datos (Data Augmentation):** Aplicar técnicas de aumento de datos más agresivas específicas para las clases con bajo rendimiento.
-*   **Revisión del etiquetado:** Asegurarse de que las etiquetas de 'no helmet' sean precisas y consistentes.
-*   **Balanceo de clases:** Implementar estrategias para mitigar el desbalance de clases en el dataset, si existe.
-*   **Ajuste de hiperparámetros:** Experimentar con diferentes configuraciones de entrenamiento (e.g., learning rate, épocas, tamaño de batch) para optimizar el rendimiento general y de clases específicas.
-*   **Exploración de arquitecturas:** Considerar la posibilidad de probar otras arquitecturas de modelos o variantes de YOLO que puedan ser más robustas para estas detecciones difíciles.
+# Paso 3 — Entrenar
+!yolo task=detect mode=train \
+    model=yolo26m.pt \
+    data={dataset.location}/data.yaml \
+    epochs=20 \
+    imgsz=640 \
+    plots=True
+
+# Paso 4 — Validar
+!yolo task=detect mode=val \
+    model=runs/detect/train/weights/best.pt \
+    data={dataset.location}/data.yaml
+
+# Paso 5 — Inferencia sobre una imagen
+from ultralytics import YOLO
+model = YOLO("runs/detect/train/weights/best.pt")
+results = model.predict("tu_imagen.jpg", verbose=False)[0]
+print(results.boxes.xyxy)   # coordenadas
+print(results.boxes.conf)   # confianza
+print(results.boxes.cls)    # clase
+```
+
+El notebook completo está en [`docs/MAIC-1125_Site-Detection_v2.ipynb`](./MAIC-1125_Site-Detection_v2.ipynb).
+
+---
+
+## 📊 Resultados de Validación
+
+Evaluación sobre el set de validación (15 imágenes, 204 instancias).
+
+### Métricas Globales
+
+| Métrica | Valor |
+|---------|-------|
+| Precision (P) | **0.594** |
+| Recall (R) | **0.541** |
+| mAP50 | **0.596** |
+| mAP50-95 | **0.452** |
+
+### Métricas por Clase
+
+| Clase | Instancias | P | R | mAP50 | mAP50-95 |
+|-------|-----------|---|---|-------|----------|
+| helmet | 63 | 0.889 | 0.794 | 0.889 | 0.609 |
+| no helmet | 8 | 0.000 | 0.000 | 0.046 | 0.022 |
+| no vest | 11 | 0.600 | 0.636 | 0.634 | 0.502 |
+| person | 78 | 0.839 | 0.705 | 0.787 | 0.652 |
+| vest | 44 | 0.639 | 0.568 | 0.626 | 0.476 |
+
+### Conclusiones Clave
+
+1. **Detección de `helmet` es robusta** (mAP50 = 0.889): la clase más representada en el dataset
+   funciona bien y puede usarse como señal de cumplimiento confiable.
+
+2. **`no helmet` falla críticamente** (mAP50 = 0.046): solo 8 instancias de entrenamiento son
+   insuficientes. Esta clase requiere un esfuerzo de recolección de datos específico antes de
+   poder usarse en producción. **No confiar en la ausencia de alertas como garantía de cumplimiento.**
+
+3. **El modelo generaliza razonablemente para un PoC con ~90 imágenes**, pero el dataset pequeño
+   limita la robustez ante variaciones de iluminación, ángulo y distancia. Escalar a 500+ imágenes
+   por clase es el próximo paso crítico.
+
+---
+
+## ✅ Checklist de Reproducibilidad
+
+| Parámetro | Valor |
+|-----------|-------|
+| Dataset | [maic-1125_m4t3 v2](https://universe.roboflow.com/juans-workspace-wp60g/maic-1125_m4t3/dataset/2) |
+| Licencia dataset | CC BY 4.0 |
+| Variante del modelo | `yolo26m` (YOLOv8 Medium) |
+| Epochs | 20 |
+| Batch size | default (ultralytics auto) |
+| imgsz | 640 |
+| ultralytics | `>=8.4.0` |
+| Pesos entrenados | `model_weights/best.pt` (incluidos en el repo) |
+
+**Fragmento de instalación reproducible:**
+```bash
+pip install "ultralytics>=8.4.0" supervision gradio opencv-python Pillow numpy
+```
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+MAIC-1125_Site-Detection_v2/
+├── src/
+│   └── app.py              # App Gradio para inferencia local
+├── configs/
+│   └── data.yaml           # Configuración del dataset (clases, rutas)
+├── docs/
+│   ├── README.md           # Este archivo
+│   ├── MAIC-1125_Site-Detection_v2.ipynb  # Notebook de entrenamiento (Colab)
+│   └── governance_checklist.md            # Checklist de ética y gobernanza
+├── model_weights/
+│   ├── best.pt             # Pesos del mejor modelo entrenado
+│   └── last.pt             # Pesos del último checkpoint
+├── requirements.txt        # Dependencias para uso local
+├── run.bat                 # Arranque rápido en Windows
+└── run.sh                  # Arranque rápido en Mac/Linux
+```
+
+---
+
+## ⚠️ Limitaciones
+
+- La clase `no helmet` tiene rendimiento muy bajo — no usar para decisiones de seguridad críticas
+- Dataset pequeño (~91 imágenes total) — propenso a falsos negativos en condiciones no vistas
+- No probado en video en tiempo real
+- Diseñado como PoC universitario — **no apto para producción sin iteración adicional**
+
+---
+
+## 📝 Changelog
+
+Ver [CHANGELOG.md](../CHANGELOG.md) *(pendiente de crear)*

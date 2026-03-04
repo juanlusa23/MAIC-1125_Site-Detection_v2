@@ -1,0 +1,9 @@
+# ── MAIC-1125 Site Detection — Dependencias locales ──────────────
+# Instalar con: pip install -r requirements.txt
+
+ultralytics>=8.4.0     # Framework YOLOv8 para inferencia
+gradio>=4.0.0          # Interfaz web local
+supervision>=0.21.0    # Visualización de detecciones (bounding boxes)
+Pillow>=9.0.0          # Procesamiento de imágenes
+opencv-python>=4.8.0   # Dibujo de anotaciones en la imagen
+numpy>=1.24.0          # Operaciones con arrays
