@@ -183,13 +183,34 @@ Evaluación sobre el set de validación (15 imágenes, 204 instancias).
 | Epochs | 20 |
 | Batch size | default (ultralytics auto) |
 | imgsz | 640 |
-| ultralytics | `>=8.4.0` |
+| ultralytics | `8.4.19` (verificado) |
+| PyTorch | `2.10.0+cpu` |
+| Python | `3.12.12` |
 | Pesos entrenados | `model_weights/best.pt` (incluidos en el repo) |
 
 **Fragmento de instalación reproducible:**
 ```bash
 pip install "ultralytics>=8.4.0" supervision gradio opencv-python Pillow numpy
 ```
+
+---
+
+## 🔁 Nota de Reproducibilidad
+
+Última ejecución verificada del pipeline de entrenamiento:
+
+| Campo | Valor |
+|-------|-------|
+| Fecha | 2026-03-04 |
+| Hora | 12:20 – 12:32 (~12 min) |
+| Entorno | Google Colab — CPU (Intel Xeon @ 2.20GHz, sin GPU) |
+| Modelo de verificación | YOLO26n (nano), 5 epochs |
+| Resultado | Pipeline completo ejecutado sin errores |
+| Plots generados | `confusion_matrix.png` ✅ · `results.png` ✅ · `PR_curve.png` ✗ (normal con pocos epochs) |
+
+> **Importante:** Esta ejecución usa YOLO26n/5 epochs solo para verificar el flujo.
+> Los pesos de producción (`model_weights/best.pt`) corresponden a YOLO26m con 20 epochs (mAP50 = 0.596).
+> Si no tienes GPU disponible en Colab, el entrenamiento de verificación tarda ~12 min en CPU.
 
 ---
 
