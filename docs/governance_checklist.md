@@ -1,20 +1,89 @@
-# Checklist de Gobernanza AECO - MAIC-1125_Site-Detection
+# Checklist de Gobernanza — MAIC-1125 Site Detection
+
+---
 
 ## 1. Procedencia de los Datos
-* **Fuente:** Combinación de imágenes de alta resolución provenientes de la plataforma **Unsplash** (licencia libre) e imágenes generadas mediante **Inteligencia Artificial** para aumentar la variabilidad del dataset.
-* **Fecha de recolección:** Random / Diversas (se buscaron diferentes condiciones lumínicas y climáticas para robustecer el modelo).
-* **Propietario:** El autor del repositorio es el dueño de la curación y generación del dataset final.
 
-## 2. Tratamiento de PII (Privacidad)
-* **Caras / Matrículas:** Existen rostros presentes en las imágenes debido a la naturaleza de la detección de elementos de seguridad (EPP).
-* **Estrategia de protección:** Las caras no son plenamente identificables debido a la resolución y distancia de las tomas. Al ser un **proyecto universitario de investigación**, no se ha aplicado desenfoque (blur) para no interferir en la precisión de la detección de cascos, pero se restringe su uso a fines académicos.
+- **Fuente:** Imágenes de Unsplash (licencia libre) + imágenes generadas con IA para aumentar variabilidad
+- **Fecha de recolección:** Diversas (distintas condiciones lumínicas y climáticas)
+- **Propietario del dataset curado:** Autor del repositorio
+- **Dataset publicado en:** [Roboflow Universe — maic-1125_m4t3 v2](https://universe.roboflow.com/juans-workspace-wp60g/maic-1125_m4t3/dataset/2)
+- **Licencia del dataset:** CC BY 4.0
 
-## 3. Declaración de Riesgo
-* **Falso Negativo de Alto Impacto:** Si el modelo omite la ausencia de un casco, un trabajador podría ingresar a una zona de riesgo sin protección, derivando en un **accidente laboral grave o fatal**.
-* **Falso Positivo de Alto Impacto:** Si el modelo detecta un casco inexistente, se generaría una falsa sensación de seguridad, permitiendo operaciones en condiciones no aptas.
+---
 
-## 4. Humano en el Bucle (Human in the Loop)
-* **Proceso de revisión:** Al ser un **estudio universitario**, el sistema funciona como una Prueba de Concepto (PoC). En un entorno real, las detecciones deberían ser validadas por un Monitor de Seguridad o Prevencionista de Riesgos antes de emitir una sanción o bloqueo de acceso.
+## 2. Privacidad y Consentimiento
 
-## 5. Licencia
-* **Tipo:** **MIT License**. El código y los pesos del modelo son abiertos para fines educativos y de mejora por la comunidad académica.
+- [x] Se verificó que las imágenes de Unsplash permiten uso libre sin atribución obligatoria
+- [x] Las imágenes generadas por IA no contienen personas reales identificables
+- [ ] Blur de rostros aplicado — **NO aplicado** (justificación: resolución/distancia minimizan identificabilidad; uso restringido a fines académicos)
+- [x] Dataset no contiene datos sensibles adicionales (nombres, documentos, ubicaciones precisas)
+
+**Minimización de datos:** Solo se recopilaron imágenes necesarias para la tarea de detección de EPP. No se almacena información personal de los trabajadores fotografiados.
+
+---
+
+## 3. Declaración de Limitaciones — Cuándo NO usar este modelo
+
+- ❌ **No usar** como único sistema de verificación en decisiones de acceso o seguridad laboral
+- ❌ **No usar** en condiciones de baja iluminación o cámaras de baja resolución (< 480p)
+- ❌ **No usar** para la clase `no helmet` en decisiones críticas — mAP50 = 0.046 (falla severamente)
+- ❌ **No usar** en producción sin supervisión humana activa
+- ❌ **No usar** fuera de entornos industriales similares al dataset de entrenamiento
+- ✅ **Uso apropiado:** Screening preliminar asistivo, alertas tempranas sujetas a revisión humana, investigación académica
+
+---
+
+## 4. Nota de Riesgos — Falsos Negativos vs Falsos Positivos
+
+| Tipo de error | Escenario | Consecuencia potencial | Severidad |
+|---|---|---|---|
+| **Falso Negativo** | Trabajador sin casco no detectado | Ingresa a zona de riesgo sin protección → accidente grave o fatal | 🔴 Crítica |
+| **Falso Negativo** | Trabajador sin chaleco no detectado | No se activa alerta → exposición a riesgo de visibilidad | 🟠 Alta |
+| **Falso Positivo** | Casco detectado donde no hay | Falsa sensación de cumplimiento → operación en condiciones no aptas | 🟠 Alta |
+| **Falso Positivo** | Persona detectada en fondo | Alertas innecesarias → fatiga del operador, reducción de atención | 🟡 Media |
+
+> **Conclusión de riesgo:** Los falsos negativos de `no helmet` son el riesgo más crítico del sistema actual. El modelo **no debe usarse como barrera de seguridad** hasta que esta clase alcance mAP50 > 0.70.
+
+---
+
+## 5. Humano en el Bucle
+
+- **Rol requerido:** Monitor de Seguridad o Prevencionista de Riesgos debe validar toda alerta antes de emitir sanción o bloqueo de acceso
+- **Contexto actual:** PoC universitario — no apto para producción autónoma
+- **Proceso recomendado en producción:** Detección automática → revisión humana → acción
+
+---
+
+## 6. Licencias
+
+### Código y Pesos del Modelo
+**MIT License** — libre para uso educativo, investigación y mejora comunitaria.
+
+```
+MIT License
+Copyright (c) 2026 MAIC-1125 Project Authors
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files, to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software,
+subject to the condition that the above copyright notice is included in all copies.
+```
+
+### Dataset
+- **Licencia:** CC BY 4.0 (Creative Commons Attribution 4.0)
+- **Fuente:** Imágenes de Unsplash (dominio público / licencia Unsplash) + imágenes generadas con IA
+- **Atribución requerida:** Citar el dataset de Roboflow Universe al usar en publicaciones académicas
+- **Restricción:** No usar las imágenes con rostros para identificación de personas
+
+---
+
+## 7. Checklist Final
+
+- [x] Fuente y licencia del dataset documentadas
+- [x] Riesgos de falsos negativos declarados
+- [x] Limitaciones de uso claramente especificadas
+- [x] Supervisión humana requerida documentada
+- [x] Licencia MIT declarada para código y pesos
+- [x] Derechos del dataset (CC BY 4.0) especificados
+- [ ] Blur de rostros — pendiente para versión de producción
+- [ ] Auditoría de sesgo por clase completada — pendiente (ver `error_analysis.md`)
