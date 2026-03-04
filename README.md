@@ -173,6 +173,16 @@ Evaluación sobre el set de validación (15 imágenes, 204 instancias).
 
 ---
 
+## 📈 Curvas de Entrenamiento
+
+### Curvas de métricas (20 epochs)
+![Curvas de entrenamiento](results/curves/results.png)
+
+### Matriz de Confusión
+![Matriz de confusión](results/curves/confusion_matrix.png)
+
+---
+
 ## ✅ Checklist de Reproducibilidad
 
 | Parámetro | Valor |
