@@ -131,7 +131,7 @@ print(results.boxes.conf)   # confianza
 print(results.boxes.cls)    # clase
 ```
 
-El notebook completo está en [`docs/Reproducibility_test.ipynb`](./Reproducibility_test.ipynb).
+El notebook completo está en [`notebooks/Reproducibility_test.ipynb`](notebooks/Reproducibility_test.ipynb).
 
 ---
 
@@ -218,15 +218,20 @@ pip install "ultralytics>=8.4.0" supervision gradio opencv-python Pillow numpy
 
 ```
 MAIC-1125_Site-Detection_v2/
+├── notebooks/
+│   ├── Reproducibility_test.ipynb         # Notebook de verificación del pipeline (Colab)
+│   └── Training_pipeline_roboflow.ipynb   # Notebook original exportado de Roboflow (referencia)
 ├── src/
 │   └── app.py              # App Gradio para inferencia local
 ├── configs/
 │   └── data.yaml           # Configuración del dataset (clases, rutas)
 ├── docs/
 │   ├── README.md           # Este archivo
-│   ├── Reproducibility_test.ipynb         # Notebook de verificación del pipeline (Colab)
-│   ├── Training_pipeline_roboflow.ipynb   # Notebook original exportado de Roboflow (referencia)
+│   ├── error_analysis.md   # Análisis de fallos (FP, FN, mejoras)
 │   └── governance_checklist.md            # Checklist de ética y gobernanza
+├── results/
+│   ├── curves/             # Curvas de entrenamiento (confusion_matrix, PR, results)
+│   └── evidence/           # Capturas de anotaciones y predicciones
 ├── model_weights/
 │   ├── best.pt             # Pesos del mejor modelo entrenado
 │   └── last.pt             # Pesos del último checkpoint
@@ -248,4 +253,4 @@ MAIC-1125_Site-Detection_v2/
 
 ## 📝 Changelog
 
-Ver [CHANGELOG.md](../CHANGELOG.md) *(pendiente de crear)*
+Ver [CHANGELOG.md](CHANGELOG.md) *(pendiente de crear)*
