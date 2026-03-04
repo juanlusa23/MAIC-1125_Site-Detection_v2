@@ -15,8 +15,8 @@ en entornos de construcción e industria — cascos, chalecos y personas.
 
 | Documento | Descripción |
 |-----------|-------------|
-| 📊 [Diapositivas](docs/slides_MAIC-1125.pdf) | Presentación ejecutiva del proyecto (6 módulos) |
-| 📄 [Mini-informe](docs/report_MAIC-1125.pdf) | Resumen técnico de 2 páginas |
+| 📊 [Diapositivas](docs/Diapositivas.pdf) | Presentación ejecutiva del proyecto (6 módulos) |
+| 📄 [Mini-informe](docs/Mini-Informe.pdf) | Resumen técnico de 2 páginas |
 | 🔍 [Análisis de errores](docs/error_analysis.md) | Falsos positivos, negativos y mejoras |
 | ✅ [Gobernanza](docs/governance_checklist.md) | Privacidad, licencias y declaración de riesgos |
 | 🧪 [Notebook reproducibilidad](notebooks/Reproducibility_test.ipynb) | Pipeline verificado en Colab |
