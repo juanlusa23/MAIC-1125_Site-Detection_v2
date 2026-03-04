@@ -22,9 +22,17 @@ Objetos presentes que el modelo no detecta.
 
 | # | Clase no detectada | Situación | Por qué ocurre |
 |---|-------------------|-----------|----------------|
-| 1 | `no helmet` | Trabajador sin casco no detectado | Solo 8 instancias de entrenamiento — clase severamente subrepresentada (mAP50 = 0.046) |
+| 1 | `no helmet` | Trabajador con gorro (no casco) no clasificado como sin casco — el modelo no emitió alerta | Gorro confundido visualmente con casco; solo 8 instancias de entrenamiento (mAP50 = 0.046) |
+**Ejemplo real — Falso Negativo `no helmet`:**
+![Falso negativo: gorro confundido con casco](../results/evidence/val_predictions/val_predictions_09.png)
+> El modelo no detectó que el trabajador llevaba un gorro en lugar de casco. No se emitió alerta de incumplimiento.
+
 | 2 | `helmet` | Casco ocluido parcialmente por otro trabajador | El modelo no generaliza bien a oclusiones; no hay suficientes ejemplos con oclusión en el dataset |
-| 3 | `vest` | Chaleco con suciedad o desgaste visible | El dataset contiene principalmente chalecos limpios y de colores puros; variabilidad insuficiente |
+| 3 | `no helmet` + `no vest` | Dos personas sin casco ni chaleco no detectadas | Múltiples incumplimientos simultáneos en una imagen; dataset no tiene suficientes escenas grupales sin EPP |
+
+**Ejemplo real — Falso Negativo múltiple:**
+![Falso negativo: dos personas sin EPP no detectadas](../results/evidence/new_predictions/new_predictions_05.png)
+> El modelo no emitió alerta para ninguna de las dos personas sin casco ni chaleco presentes en la imagen.
 
 ---
 
