@@ -131,7 +131,7 @@ print(results.boxes.conf)   # confianza
 print(results.boxes.cls)    # clase
 ```
 
-El notebook completo está en [`docs/MAIC-1125_Site-Detection_v2.ipynb`](./MAIC-1125_Site-Detection_v2.ipynb).
+El notebook completo está en [`docs/Reproducibility_test.ipynb`](./Reproducibility_test.ipynb).
 
 ---
 
@@ -224,7 +224,7 @@ MAIC-1125_Site-Detection_v2/
 │   └── data.yaml           # Configuración del dataset (clases, rutas)
 ├── docs/
 │   ├── README.md           # Este archivo
-│   ├── MAIC-1125_Site-Detection_v2.ipynb  # Notebook de entrenamiento (Colab)
+│   ├── Reproducibility_test.ipynb         # Notebook de verificación del pipeline (Colab)
 │   └── governance_checklist.md            # Checklist de ética y gobernanza
 ├── model_weights/
 │   ├── best.pt             # Pesos del mejor modelo entrenado
